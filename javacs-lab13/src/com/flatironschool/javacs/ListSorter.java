@@ -63,8 +63,26 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		if (list.size() <= 1) {
+			return list;
+		}
+		List<T> half1 = mergeSort(new LinkedList<T>(list.subList(0, list.size()/2)), comparator);
+		List<T> half2 = mergeSort(new LinkedList<T>(list.subList(list.size()/2, list.size())), comparator);
+		insertionSort(half1, comparator);
+		insertionSort(half2, comparator);
+		List<T> merged = new LinkedList<T>();
+		for (int i = 0; i < list.size(); i++) {
+			if (half1.size() == 0) {
+				merged.add(half2.remove(0));
+			} else if (half2.size() == 0) {
+				merged.add(half1.remove(0));
+			 } else if (comparator.compare(half1.get(0), half2.get(0)) < 0) {
+			 	merged.add(half1.remove(0));
+			 } else {
+				 merged.add(half2.remove(0));
+			 }
+		}
+		return merged;
 	}
 
 	/**
@@ -75,7 +93,15 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
+		PriorityQueue<T> heap = new PriorityQueue<T>(list.size(), comparator);
+		for (T element : list) {
+			heap.add(element);
+		}
+		list.clear();
+		while (!heap.isEmpty()) {
+			T removed = heap.poll();
+			list.add(removed);
+		}
 	}
 
 	
@@ -89,8 +115,24 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+		PriorityQueue<T> heap = new PriorityQueue<T>(list.size(), comparator);
+		for (T element : list) {
+			if (heap.size() < k) {
+				heap.offer(element);
+		 	} else {
+		 		T head = heap.peek();
+		 		if (comparator.compare(head, element) < 0) {
+		 			heap.poll();
+		 	        heap.offer(element);
+		 		}
+		 	}
+		 }
+		List<T> klist = new ArrayList<T>();
+			while (!heap.isEmpty()) {
+				T removed = heap.poll();
+				klist.add(removed);
+			}
+		return klist;
 	}
 
 	
